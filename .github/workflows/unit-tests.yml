@@ -1,0 +1,42 @@
+name: Unit Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  unit_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log inputs
+        run: |
+          echo "Branch: ${{ github.ref }}"
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Set up Python 3.11.1
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11.1
+
+      - name: Create Virtual Environment
+        run: python -m venv myenv
+
+      - name: Activate Virtual Environment
+        run: source myenv/bin/activate
+
+      - name: Install dependencies
+        run: |
+          . myenv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Run unit tests
+        run: |
+          . myenv/bin/activate
+          pytest

@@ -1,0 +1,61 @@
+name: Tusk Sanity Check
+
+on:
+  workflow_dispatch:
+    inputs:
+      taskId:
+        description: "Tusk Task ID"
+        required: true
+      runType:
+        description: "Tusk Run Type"
+        required: true
+      runId:
+        description: "Tusk Run ID"
+        required: true
+
+jobs:
+  sanity_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log inputs
+        run: |
+          echo "Tusk Task ID: ${{ github.event.inputs.taskId }}"
+          echo "Tusk Run Type: ${{ github.event.inputs.runType }}"
+          echo "Tusk Run ID: ${{ github.event.inputs.runId }}"
+          echo "Branch: ${{ github.ref }}"
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Set up Python 3.11.1
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11.1
+
+      - name: Create Virtual Environment
+        run: python -m venv myenv
+
+      - name: Activate Virtual Environment
+        run: source myenv/bin/activate
+
+      - name: Install dependencies
+        run: |
+          . myenv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Format code with Black
+        run: |
+          . myenv/bin/activate
+          black .
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "fix(${{ github.run_id }}): auto formatting and linting"
+          skip_fetch: true
+          skip_checkout: true
+
+      - name: Lint with Pylint
+        run: |
+          . myenv/bin/activate
+          pylint -d C,R,I .
