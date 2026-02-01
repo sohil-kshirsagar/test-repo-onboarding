@@ -23,8 +23,8 @@ scripts:
 testFiles:
   - testFilePath: "tests/test_calculator.py"
     sourceFilePath: "utils/calculator.py"
-  - testFilePath: "tests/test_hello.py"
-    sourceFilePath: "hello.py"
+  - testFilePath: "tests/test_nested.py"
+    sourceFilePath: "test_folder/nested_file.py"
 
 testCoverageDirs:
   - "utils"
