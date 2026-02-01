@@ -1,0 +1,31 @@
+version: 1
+
+metadata:
+  description: "pytest unit tests"
+  testFramework: "pytest"
+
+sandbox:
+  provider: "e2b"
+  dockerfile: "Dockerfile"
+  resources:
+    numCpus: 8
+    memoryMB: 8192
+
+config:
+  appDir: null
+  testFileRegex: "^tests/test_.*\\.py$"
+
+scripts:
+  setup: "setup-script.sh"
+  test: "test-script.sh"
+  coverage: "coverage-script.sh"
+
+testFiles:
+  - testFilePath: "tests/test_calculator.py"
+    sourceFilePath: "utils/calculator.py"
+  - testFilePath: "tests/test_hello.py"
+    sourceFilePath: "hello.py"
+
+testCoverageDirs:
+  - "utils"
+  - "tests"
